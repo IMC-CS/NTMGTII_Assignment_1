@@ -26,13 +26,28 @@ def calculate_checksum8(bytes: bytes) -> bytes:
     return checksum
 
 
-def calculate_checksum16(bytes: bytes) -> bytes:
+def calculate_checksum16(data: bytes) -> int:
     """
-    Calculates a checksum from a byte array (16 bits).
-    Hint: instead of iterating byte per byte, each iteration processes two bytes.
-    Bit masks have to be adapted to 16-bit accordingly.
+    Calculates a 16-bit one's complement checksum from a byte array.
+    Each iteration processes two bytes as one 16-bit word.
     """
-    return 0
+    checksum = 0
+    length = len(data)
+
+    # 如果字节数是奇数，最后一个字节需要补 0
+    if length % 2 == 1:
+        data += b"\x00"
+
+    # 每次取 2 个字节，组成一个 16-bit word
+    for i in range(0, len(data), 2):
+        word = (data[i] << 8) + data[i+1]  # 高位在前，低位在后
+        checksum += word
+        checksum = (checksum & 0xFFFF) + (checksum >> 16)  # 加上溢出的进位
+
+    # 最后取反
+    checksum = checksum ^ 0xFFFF
+    return checksum
+
 
 
 example_bytes = bytearray(b'\x10\x6f\xff\xa4')
