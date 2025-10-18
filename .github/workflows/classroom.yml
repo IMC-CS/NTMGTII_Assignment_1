@@ -1,3 +1,6 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
 name: Autograde
 
 on:
@@ -7,7 +10,7 @@ on:
   pull_request:
     branches:
       - '**'
-  
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -28,7 +31,8 @@ jobs:
           pip install thrift>=0.16.0
           pip install pytest
           pip install -r requirements.txt || true
-     - name: Run pytest
+
+      - name: Run pytest
         run: |
           echo "Running tests on branch: ${{ github.ref_name }}"
           pytest -v checksum_test.py
