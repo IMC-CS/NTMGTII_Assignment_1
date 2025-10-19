@@ -31,24 +31,6 @@ def calculate_checksum16(data: bytes) -> int:
     Calculates a 16-bit checksum (little-endian) following
     the same algorithmic structure as calculate_checksum8.
     """
-    checksum = 0
-    carry_sum = 0
-
-    for i in range(0, len(data), 2):
-        if i + 1 < len(data):
-            word = data[i] | (data[i + 1] << 8)  # little-endian
-        else:
-            word = data[i] 
-        checksum += word
-        carry = (checksum >> 16)
-        carry_sum += carry
-        checksum &= 0xFFFF
-
-    checksum += carry_sum
-    carry = (checksum >> 16)
-    checksum = (checksum & 0xFFFF) + carry      # fold carry once more
-    checksum &= 0xFFFF
-    checksum ^= 0xFFFF
 
     return checksum
 
