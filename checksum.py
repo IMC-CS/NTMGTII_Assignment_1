@@ -47,8 +47,6 @@ def calculate_checksum16(data: bytes) -> int:
     checksum += carry_sum
     carry = (checksum & 0xFFFF0000) >> 16
     checksum += carry
-    carry = (checksum & 0xFFFF0000) >> 16
-    checksum += carry
     checksum &= 0xFFFF
     checksum ^= 0xFFFF
 
