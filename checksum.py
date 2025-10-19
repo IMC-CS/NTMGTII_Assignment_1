@@ -8,15 +8,15 @@ def calculate_checksum8(data: bytes) -> bytes:
     carry_sum = 0
     for b in data:
         checksum += b
-        carry = (checksum & 0xFF00) >> 8 # checksum = 0x0100 & 0xFF00 = 0x0100 >> 8 -> 0x0001
-        carry_sum += carry 
-        checksum &= 0xFF # 0x0156 -> 0x0056
-    
+        carry = (checksum & 0xFF00) >> 8  # checksum = 0x0100 & 0xFF00 = 0x0100 >> 8 -> 0x0001
+        carry_sum += carry
+        checksum = checksum & 0x00FF  # 0x0156 -> 0x0056
+
     checksum += carry_sum
     carry = (checksum & 0xFF00) >> 8
     checksum += carry
-    checksum &= 0xFF
-    checksum ^= 0xFF # NEGATE the result -> XOR with 0xFF
+    checksum = checksum ^ 0xFF  # NEGATE the result -> XOR with 0xFF
+
 
     # XOR Truth table
     # 0 0 -> 0
@@ -39,13 +39,18 @@ def calculate_checksum16(data: bytes) -> int:
             word = data[i] | (data[i + 1] << 8)  # little-endian
         else:
             word = data[i]
-
         checksum += word
-        if checksum > 0xFFFF:
-            checksum = (checksum & 0xFFFF) + 1  # fold carry
+        carry = (checksum & 0xFFFF0000) >> 16
+        carry_sum += carry
+        checksum &= 0xFFFF
 
-    checksum ^= 0xFFFF
+    checksum += carry_sum
+    carry = (checksum & 0xFFFF0000) >> 16
+    checksum += carry
     checksum &= 0xFFFF
+    checksum ^= 0xFFFF
+
+    return checksum
 
 
 # Example usage
