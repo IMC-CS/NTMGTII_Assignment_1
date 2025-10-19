@@ -39,16 +39,14 @@ def calculate_checksum16(data: bytes) -> int:
             word = data[i] | (data[i + 1] << 8)  # little-endian
         else:
             word = data[i]
-        checksum += word
-        carry = (checksum & 0xFFFF0000) >> 16
-        carry_sum += carry
-        checksum &= 0xFFFF
 
-    checksum += carry_sum
-    carry = (checksum & 0xFFFF0000) >> 16
-    checksum += carry
-    checksum &= 0xFFFF
+        checksum += word
+        if checksum > 0xFFFF:
+            checksum = (checksum & 0xFFFF) + 1
+            
+
     checksum ^= 0xFFFF
+    checksum &= 0xFFFF
     
     return checksum
 
