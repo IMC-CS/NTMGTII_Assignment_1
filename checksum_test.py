@@ -16,7 +16,7 @@ def test_checksum16():
     example_bytes = bytearray(b'\x10\x6f\xff\xa4\x10\x00\xff\xff\xa0')
     checksum = calculate_checksum16(example_bytes)
     print(checksum) 
-    print(int.from_bytes(b'\xdf\xeb', 'little'))
+    print(int.from_bytes(b'\x3f\xeb', 'little'))
     assert checksum == int.from_bytes(b'\x3f\xeb', 'little')
 
     example_bytes = bytearray(b'\xff\xff\xff\x00\xff')
