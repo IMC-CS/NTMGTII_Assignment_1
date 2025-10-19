@@ -1,12 +1,12 @@
 # Example checksum calculation
 
-def calculate_checksum8(bytes: bytes) -> bytes:
+def calculate_checksum8(data: bytes) -> bytes:
     """
     Calculates a checksum from an array of bytes (8 bits).
     """
     checksum = 0
     carry_sum = 0
-    for b in bytes:
+    for b in data:
         checksum += b
         carry = (checksum & 0xFF00) >> 8 # checksum = 0x0100 & 0xFF00 = 0x0100 >> 8 -> 0x0001
         carry_sum += carry 
@@ -48,7 +48,7 @@ def calculate_checksum16(data: bytes) -> int:
     checksum += carry
     checksum &= 0xFFFF
     checksum ^= 0xFFFF
-
+    
     return checksum
 
 
