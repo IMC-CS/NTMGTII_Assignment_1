@@ -10,12 +10,13 @@ def calculate_checksum8(data: bytes) -> bytes:
         checksum += b
         carry = (checksum & 0xFF00) >> 8 # checksum = 0x0100 & 0xFF00 = 0x0100 >> 8 -> 0x0001
         carry_sum += carry 
-        checksum = checksum & 0x00FF # 0x0156 -> 0x0056
+        checksum &= 0xFF # 0x0156 -> 0x0056
     
     checksum += carry_sum
     carry = (checksum & 0xFF00) >> 8
     checksum += carry
-    checksum = checksum ^ 0xFF # NEGATE the result -> XOR with 0xFF
+    checksum &= 0xFF
+    checksum ^= 0xFF # NEGATE the result -> XOR with 0xFF
 
     # XOR Truth table
     # 0 0 -> 0
@@ -53,12 +54,13 @@ def calculate_checksum16(data: bytes) -> int:
 
 
 
+# Example usage
 example_bytes = bytearray(b'\x10\x6f\xff\xa4')
 checksum = calculate_checksum8(example_bytes)
-print(f'Checksum of {example_bytes} is 0x{checksum:X}') # :X modifies the format to print in hexadecimal
+print(f'Checksum of {example_bytes} is 0x{checksum:02X}')  # Print as 2-digit hex
 
 example_bytes.append(checksum)
 
 verify = calculate_checksum8(example_bytes)
-print(f'Data frame = {example_bytes}, result of verification = 0x{verify:X}')
+print(f'Data frame = {example_bytes}, result of verification = 0x{verify:02X}')
 
