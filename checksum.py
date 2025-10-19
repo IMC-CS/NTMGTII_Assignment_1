@@ -25,32 +25,28 @@ def calculate_checksum8(bytes: bytes) -> bytes:
 
     return checksum
 
-
 def calculate_checksum16(data: bytes) -> int:
     """
-    Calculates a 16-bit checksum from a byte array.
-    Processes two bytes at a time (big-endian order).
+    Calculates a 16-bit checksum (little-endian) following
+    the same algorithmic structure as calculate_checksum8.
     """
     checksum = 0
+    carry_sum = 0
 
-    # If odd number of bytes, pad one zero byte at the end
-    if len(data) % 2 != 0:
-        data += b'\x00'
-
-    # Process each 16-bit word
     for i in range(0, len(data), 2):
-        word = (data[i] << 8) + data[i + 1]
+        if i + 1 < len(data):
+            word = data[i] | (data[i + 1] << 8)  # little-endian
+        else:
+            word = data[i]
         checksum += word
-
-        # Wrap around carry beyond 16 bits
         carry = (checksum & 0xFFFF0000) >> 16
-        checksum = (checksum & 0xFFFF) + carry
+        carry_sum += carry
+        checksum &= 0xFFFF
 
-    # Add any remaining carry
+    checksum += carry_sum
     carry = (checksum & 0xFFFF0000) >> 16
-    checksum = (checksum & 0xFFFF) + carry
-
-    # Final bitwise negation (XOR with 0xFFFF)
+    checksum += carry
+    checksum &= 0xFFFF
     checksum ^= 0xFFFF
 
     return checksum
@@ -65,9 +61,4 @@ example_bytes.append(checksum)
 
 verify = calculate_checksum8(example_bytes)
 print(f'Data frame = {example_bytes}, result of verification = 0x{verify:X}')
-
-verify = calculate_checksum8(example_bytes)
-print(f'Data frame = {example_bytes}, result of verification = 0x{verify:X}')
-
-
 
