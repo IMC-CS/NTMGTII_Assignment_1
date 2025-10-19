@@ -41,14 +41,11 @@ def calculate_checksum16(data: bytes) -> int:
             word = data[i]
 
         checksum += word
-        while checksum > 0xFFFF:
-            checksum = (checksum & 0xFFFF) + (checksum >> 16)
-            
+        if checksum > 0xFFFF:
+            checksum = (checksum & 0xFFFF) + 1  # fold carry
 
-    checksum = (~checksum) & 0xFFFF
-    
-    return checksum
-
+    checksum ^= 0xFFFF
+    checksum &= 0xFFFF
 
 
 # Example usage
