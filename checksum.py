@@ -6,11 +6,11 @@ def calculate_checksum8(data: bytes) -> bytes:
     """
     checksum = 0
     carry_sum = 0
-    for b in data:  # for loop that runs for each 8-bit part of the data
-        checksum += b  # when validating a checksum we add the individual parts together
-        carry = (checksum & 0xFF00) >> 8  # checksum = 0x0100 & 0xFF00 = 0x0100 >> 8 -> 0x0001, we extract the carry, if any
-        carry_sum += carry  # for each 8 bit part we add the carry together in a variable called carry_sum
-        checksum = checksum & 0x00FF  # 0x0156 -> 0x0056,
+    for b in data:
+        checksum += b
+        carry = (checksum & 0xFF00) >> 8  # checksum = 0x0100 & 0xFF00 = 0x0100 >> 8 -> 0x0001
+        carry_sum += carry
+        checksum = checksum & 0x00FF  # 0x0156 -> 0x0056
 
     checksum += carry_sum
     carry = (checksum & 0xFF00) >> 8
@@ -31,20 +31,8 @@ def calculate_checksum16(data: bytes) -> int:
     Calculates a 16-bit checksum (little-endian) following
     the same algorithmic structure as calculate_checksum8.
     """
-    checksum = 0
-    carry_sum = 0
-    for b in data:
-        checksum += b
-        carry = (checksum & 0xFFFF0000) >> 16  # extracts the overflow above 16 bits
-        carry_sum += carry
-        checksum = checksum & 0x0000FFFF  # keeps only the low 16 bits
 
-    checksum += carry_sum  # adds the overflowed (carry) values back to the checksum "total"
-    carry = (checksum & 0xFFFF0000) >> 16  # checks for any new overflow
-    checksum += carry
-    checksum = checksum ^ 0xFFFF  # invert's all bits with the 1's complement -> condition for checksum to be valid, i.e. probably not a networking error
-
-    return checksum  # ensure result is within 16 bits
+    return checksum
 
 
 # Example usage
